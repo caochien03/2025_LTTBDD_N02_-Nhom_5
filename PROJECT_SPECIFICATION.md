@@ -414,24 +414,6 @@ final List<String> provinces = [
 
 ---
 
-## 👥 **PHÂN CÔNG CÔNG VIỆC**
-
-### **Thành viên 1:**
-
--   **UI/UX Development:**
-    -   Profile screen
-    -   Explore screen
-    -   Basic navigation
-    -   Theme & styling
-
-### **Thành viên 2:**
-
--   **Backend & Features:**
-    -   Firebase setup
-    -   Camera integration
-    -   Favorites functionality
-    -   Diary management
-
 ### **Chung:**
 
 -   Code review

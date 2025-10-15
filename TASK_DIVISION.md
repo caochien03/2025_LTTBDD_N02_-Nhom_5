@@ -2,8 +2,8 @@
 
 ## 🎯 **NGUYÊN TẮC PHÂN CHIA**
 
-**Thành viên A (Bạn - Leader):** Các task phức tạp, architecture, Firebase  
-**Thành viên B (Cộng sự):** Các task đơn giản, UI components, data mẫu
+**Nguyễn Cao Chiến (Leader):** Các task phức tạp, architecture, Firebase  
+**Hà Thành Đạt (Cộng sự):** Các task đơn giản, UI components, data mẫu
 
 ---
 
@@ -11,7 +11,7 @@
 
 ### **🏗️ PHASE 1: FOUNDATION (Tuần 1)**
 
-#### **👨‍💻 THÀNH VIÊN A (Bạn - Leader):**
+#### **👨‍💻 NGUYỄN CAO CHIẾN (Leader):**
 
 **Độ khó: ⭐⭐⭐⭐**
 
@@ -45,7 +45,7 @@
     - Basic routing
     - **Thời gian:** 1 ngày
 
-#### **👨‍💻 THÀNH VIÊN B (Cộng sự):**
+#### **👨‍💻 HÀ THÀNH ĐẠT (Cộng sự):**
 
 **Độ khó: ⭐⭐**
 
@@ -73,7 +73,7 @@
 
 ### **🎨 PHASE 2: CORE FEATURES (Tuần 2)**
 
-#### **👨‍💻 THÀNH VIÊN A (Bạn - Leader):**
+#### **👨‍💻 NGUYỄN CAO CHIẾN (Leader):**
 
 **Độ khó: ⭐⭐⭐⭐**
 
@@ -96,7 +96,7 @@
     - Firebase CRUD operations
     - **Thời gian:** 1 ngày
 
-#### **👨‍💻 THÀNH VIÊN B (Cộng sự):**
+#### **👨‍💻 HÀ THÀNH ĐẠT (Cộng sự):**
 
 **Độ khó: ⭐⭐**
 
@@ -124,7 +124,7 @@
 
 ### **🚀 PHASE 3: ADVANCED FEATURES (Tuần 3)**
 
-#### **👨‍💻 THÀNH VIÊN A (Bạn - Leader):**
+#### **👨‍💻 NGUYỄN CAO CHIẾN (Leader):**
 
 **Độ khó: ⭐⭐⭐⭐⭐**
 
@@ -148,7 +148,7 @@
     - Language switching
     - **Thời gian:** 1 ngày
 
-#### **👨‍💻 THÀNH VIÊN B (Cộng sự):**
+#### **👨‍💻 HÀ THÀNH ĐẠT (Cộng sự):**
 
 **Độ khó: ⭐⭐**
 
@@ -176,7 +176,7 @@
 
 ## 📊 **TỔNG QUAN PHÂN CHIA**
 
-### **🎯 Thành viên A (Bạn - Leader):**
+### **🎯 Nguyễn Cao Chiến (Leader):**
 
 **Tổng thời gian:** ~12 ngày  
 **Độ khó trung bình:** ⭐⭐⭐⭐  
@@ -187,7 +187,7 @@
 -   Camera & file handling
 -   Integration & debugging
 
-### **🎯 Thành viên B (Cộng sự):**
+### **🎯 Hà Thành Đạt (Cộng sự):**
 
 **Tổng thời gian:** ~12 ngày  
 **Độ khó trung bình:** ⭐⭐  
@@ -229,7 +229,7 @@
 
 ---
 
-## 🎯 **HƯỚNG DẪN CHO THÀNH VIÊN B**
+## 🎯 **HƯỚNG DẪN CHO HÀ THÀNH ĐẠT**
 
 ### **📚 Resources cần đọc:**
 
@@ -269,7 +269,7 @@ const EdgeInsets padding = EdgeInsets.all(16.0);
 
 1. **Đọc error message** kỹ
 2. **Search Google** với error message
-3. **Hỏi thành viên A** (bạn)
+3. **Hỏi Nguyễn Cao Chiến**
 4. **Commit code** thường xuyên
 
 ---
@@ -279,17 +279,17 @@ const EdgeInsets padding = EdgeInsets.all(16.0);
 ### **📅 Tuần 1:**
 
 ```
-Thứ 2: Thành viên A - Firebase setup
-       Thành viên B - Sample data
+Thứ 2: Nguyễn Cao Chiến - Firebase setup
+       Hà Thành Đạt - Sample data
 
-Thứ 3: Thành viên A - Dependencies & Models
-       Thành viên B - Sample data (tiếp)
+Thứ 3: Nguyễn Cao Chiến - Dependencies & Models
+       Hà Thành Đạt - Sample data (tiếp)
 
-Thứ 4: Thành viên A - Navigation setup
-       Thành viên B - Basic UI components
+Thứ 4: Nguyễn Cao Chiến - Navigation setup
+       Hà Thành Đạt - Basic UI components
 
-Thứ 5: Thành viên A - Testing & debugging
-       Thành viên B - Theme setup
+Thứ 5: Nguyễn Cao Chiến - Testing & debugging
+       Hà Thành Đạt - Theme setup
 
 Thứ 6: Review & integration
 ```
@@ -297,14 +297,14 @@ Thứ 6: Review & integration
 ### **📅 Tuần 2:**
 
 ```
-Thứ 2: Thành viên A - Firebase services
-       Thành viên B - Profile screen UI
+Thứ 2: Nguyễn Cao Chiến - Firebase services
+       Hà Thành Đạt - Profile screen UI
 
-Thứ 3: Thành viên A - Explore logic
-       Thành viên B - Location cards
+Thứ 3: Nguyễn Cao Chiến - Explore logic
+       Hà Thành Đạt - Location cards
 
-Thứ 4: Thành viên A - Favorites logic
-       Thành viên B - Explore UI
+Thứ 4: Nguyễn Cao Chiến - Favorites logic
+       Hà Thành Đạt - Explore UI
 
 Thứ 5: Integration & testing
 Thứ 6: Review & polish
@@ -313,14 +313,14 @@ Thứ 6: Review & polish
 ### **📅 Tuần 3:**
 
 ```
-Thứ 2: Thành viên A - Camera integration
-       Thành viên B - Diary UI
+Thứ 2: Nguyễn Cao Chiến - Camera integration
+       Hà Thành Đạt - Diary UI
 
-Thứ 3: Thành viên A - Diary logic
-       Thành viên B - Favorites UI
+Thứ 3: Nguyễn Cao Chiến - Diary logic
+       Hà Thành Đạt - Favorites UI
 
-Thứ 4: Thành viên A - Localization
-       Thành viên B - Polish & testing
+Thứ 4: Nguyễn Cao Chiến - Localization
+       Hà Thành Đạt - Polish & testing
 
 Thứ 5: Final integration
 Thứ 6: Demo preparation
@@ -330,14 +330,14 @@ Thứ 6: Demo preparation
 
 ## 🎯 **SUCCESS METRICS**
 
-### **✅ Thành viên A hoàn thành:**
+### **✅ Nguyễn Cao Chiến hoàn thành:**
 
 -   Firebase hoạt động ổn định
 -   4 tính năng chính có logic
 -   Camera integration
 -   App có thể demo
 
-### **✅ Thành viên B hoàn thành:**
+### **✅ Hà Thành Đạt hoàn thành:**
 
 -   Tất cả UI screens đẹp
 -   Sample data đầy đủ
@@ -377,4 +377,4 @@ Thứ 6: Demo preparation
 
 **📅 Ngày tạo:** [Ngày hiện tại]  
 **👥 Nhóm:** 2025_LTTBDD_N02 - Nhóm 5  
-**📧 Contact:** [Email của bạn]
+**📧 Contact:** [Email của Nguyễn Cao Chiến]
