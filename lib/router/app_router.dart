@@ -14,7 +14,7 @@ class AppRouter {
         name: 'profile',
         pageBuilder:
             (context, state) => _buildPageWithTransition(
-              child: const ProfileScreen(),
+              child: const ProfilePage(),
               state: state,
             ),
       ),
