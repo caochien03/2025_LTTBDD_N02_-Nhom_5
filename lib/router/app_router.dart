@@ -32,7 +32,7 @@ class AppRouter {
         name: 'favorites',
         pageBuilder:
             (context, state) => _buildPageWithTransition(
-              child: const FavoritesScreen(),
+              child: const FavoritesPage(),
               state: state,
             ),
       ),
