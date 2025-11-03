@@ -23,7 +23,7 @@ class AppRouter {
         name: 'explore',
         pageBuilder:
             (context, state) => _buildPageWithTransition(
-              child: const ExploreScreen(),
+              child: const ExplorePage(),
               state: state,
             ),
       ),
