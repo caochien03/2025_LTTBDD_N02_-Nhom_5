@@ -41,7 +41,7 @@ class AppRouter {
         name: 'diary',
         pageBuilder:
             (context, state) => _buildPageWithTransition(
-              child: const DiaryScreen(),
+              child: const DiaryPage(),
               state: state,
             ),
       ),

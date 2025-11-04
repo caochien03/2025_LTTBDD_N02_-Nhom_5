@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/location.dart';
 import '../../data/locations_data.dart';
-
+import '../../widgets/bottom_nav_bar.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -263,6 +263,7 @@ class _ExplorePageState extends State<ExplorePage> {
           ),
         ],
       ),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 
