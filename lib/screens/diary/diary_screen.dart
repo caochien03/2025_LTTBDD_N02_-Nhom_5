@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../models/diary_entry.dart';
 import '../../data/diary_data.dart';
@@ -16,11 +19,22 @@ class _DiaryPageState extends State<DiaryPage> {
   DiaryEntry? selectedEntry;
   int selectedImageIndex = 0;
   bool showAddDialog = false;
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
+  List<XFile> _pickedImages = [];
 
   @override
   void initState() {
     super.initState();
     diaryEntries = getDiaryEntries();
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    _notesController.dispose();
+    super.dispose();
   }
 
   String formatDate(String dateString) {
@@ -92,16 +106,53 @@ class _DiaryPageState extends State<DiaryPage> {
                       Expanded(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            entry.images[currentIndex],
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.broken_image),
-                              );
-                            },
-                          ),
+                          child:
+                              kIsWeb
+                                  ? Image.network(
+                                    entry.images[currentIndex],
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey[300],
+                                        child: const Icon(Icons.broken_image),
+                                      );
+                                    },
+                                  )
+                                  : (entry.images[currentIndex].startsWith(
+                                        'http',
+                                      )
+                                      ? Image.network(
+                                        entry.images[currentIndex],
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Container(
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                              Icons.broken_image,
+                                            ),
+                                          );
+                                        },
+                                      )
+                                      : Image.file(
+                                        File(entry.images[currentIndex]),
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Container(
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                              Icons.broken_image,
+                                            ),
+                                          );
+                                        },
+                                      )),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -274,48 +325,129 @@ class _DiaryPageState extends State<DiaryPage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  const Spacer(),
+                                  PopupMenuButton<String>(
+                                    onSelected: (value) {
+                                      if (value == 'edit') {
+                                        _showEditEntryDialog(context, index);
+                                      } else if (value == 'delete') {
+                                        _deleteEntry(index);
+                                      }
+                                    },
+                                    itemBuilder:
+                                        (context) => const [
+                                          PopupMenuItem(
+                                            value: 'edit',
+                                            child: Text('Chỉnh sửa'),
+                                          ),
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: Text('Xóa'),
+                                          ),
+                                        ],
+                                  ),
                                 ],
                               ),
                               const SizedBox(height: 12),
                               // Photo Grid
-                              GridView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 8,
-                                      mainAxisSpacing: 8,
-                                    ),
-                                itemCount: entry.images.length,
-                                itemBuilder: (context, imgIndex) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      _showImageGallery(
-                                        context,
-                                        entry,
-                                        imgIndex,
-                                      );
-                                    },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.network(
-                                        entry.images[imgIndex],
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return Container(
-                                            color: Colors.grey[300],
-                                            child: const Icon(
-                                              Icons.broken_image,
-                                            ),
+                              Builder(
+                                builder: (context) {
+                                  final int total = entry.images.length;
+                                  final int displayCount =
+                                      total > 3 ? 3 : total;
+                                  return GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 8,
+                                          mainAxisSpacing: 8,
+                                        ),
+                                    itemCount: displayCount,
+                                    itemBuilder: (context, imgIndex) {
+                                      final bool isLastAndMore =
+                                          imgIndex == displayCount - 1 &&
+                                          total > displayCount;
+                                      Widget imageWidget;
+                                      if (kIsWeb) {
+                                        imageWidget = Image.network(
+                                          entry.images[imgIndex],
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stack) =>
+                                                  Container(
+                                                    color: Colors.grey[300],
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                    ),
+                                                  ),
+                                        );
+                                      } else if (entry.images[imgIndex]
+                                          .startsWith('http')) {
+                                        imageWidget = Image.network(
+                                          entry.images[imgIndex],
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stack) =>
+                                                  Container(
+                                                    color: Colors.grey[300],
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                    ),
+                                                  ),
+                                        );
+                                      } else {
+                                        imageWidget = Image.file(
+                                          File(entry.images[imgIndex]),
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stack) =>
+                                                  Container(
+                                                    color: Colors.grey[300],
+                                                    child: const Icon(
+                                                      Icons.broken_image,
+                                                    ),
+                                                  ),
+                                        );
+                                      }
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          _showImageGallery(
+                                            context,
+                                            entry,
+                                            imgIndex,
                                           );
                                         },
-                                      ),
-                                    ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                          child: Stack(
+                                            fit: StackFit.expand,
+                                            children: [
+                                              imageWidget,
+                                              if (isLastAndMore)
+                                                Container(
+                                                  color: Colors.black45,
+                                                  alignment: Alignment.center,
+                                                  child: Text(
+                                                    '+${total - displayCount}',
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
@@ -360,115 +492,533 @@ class _DiaryPageState extends State<DiaryPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder:
-          (context) => Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Thêm Nhật Ký Mới',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
-                      ),
-                    ],
+          (context) => StatefulBuilder(
+            builder:
+                (context, setSheetState) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Chọn ảnh từ thư viện hoặc chụp ảnh mới',
-                    style: TextStyle(color: Colors.grey, fontSize: 14),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Tính năng chụp ảnh sẽ được triển khai',
-                                ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Thêm Nhật Ký Mới',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.camera_alt),
-                          label: const Text('Chụp ảnh'),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Tính năng chọn ảnh sẽ được triển khai',
-                                ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.image),
-                          label: const Text('Thư viện'),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 32),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Thêm ghi chú cho ảnh...',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 4,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Hủy'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Tính năng lưu sẽ được triển khai'),
                             ),
-                          );
-                        },
-                        child: const Text('Lưu'),
-                      ),
-                    ],
+                            IconButton(
+                              onPressed: () {
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Chọn ảnh từ thư viện hoặc chụp ảnh mới',
+                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                        ),
+                        const SizedBox(height: 16),
+                        if (_pickedImages.isNotEmpty) ...[
+                          SizedBox(
+                            height: 120,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: _pickedImages.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: 120,
+                                  margin: const EdgeInsets.only(right: 8),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child:
+                                            kIsWeb
+                                                ? Image.network(
+                                                  _pickedImages[index].path,
+                                                  fit: BoxFit.cover,
+                                                )
+                                                : Image.file(
+                                                  File(
+                                                    _pickedImages[index].path,
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                      ),
+                                      Positioned(
+                                        top: 4,
+                                        right: 4,
+                                        child: Material(
+                                          color: Colors.black45,
+                                          shape: const CircleBorder(),
+                                          child: InkWell(
+                                            customBorder: const CircleBorder(),
+                                            onTap: () {
+                                              setSheetState(() {
+                                                _pickedImages.removeAt(index);
+                                              });
+                                            },
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: Icon(
+                                                Icons.close,
+                                                size: 16,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final photo = await _picker.pickImage(
+                                    source: ImageSource.camera,
+                                    imageQuality: 85,
+                                  );
+                                  if (photo != null) {
+                                    setSheetState(
+                                      () =>
+                                          _pickedImages = [
+                                            ..._pickedImages,
+                                            photo,
+                                          ],
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.camera_alt),
+                                label: const Text('Chụp ảnh'),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 32,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final files = await _picker.pickMultiImage(
+                                    imageQuality: 85,
+                                  );
+                                  if (files.isNotEmpty) {
+                                    setSheetState(
+                                      () =>
+                                          _pickedImages = [
+                                            ..._pickedImages,
+                                            ...files,
+                                          ],
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.image),
+                                label: const Text('Thư viện'),
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 32,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _locationController,
+                          decoration: const InputDecoration(
+                            labelText: 'Địa điểm',
+                            hintText: 'Ví dụ: Vịnh Hạ Long',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _notesController,
+                          decoration: const InputDecoration(
+                            labelText: 'Ghi chú',
+                            hintText: 'Thêm ghi chú cho ảnh...',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLines: 4,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Hủy'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (_pickedImages.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                        'Vui lòng chọn hoặc chụp ít nhất 1 ảnh',
+                                      ),
+                                    ),
+                                  );
+                                  return;
+                                }
+                                final newEntry = DiaryEntry(
+                                  id:
+                                      DateTime.now().millisecondsSinceEpoch
+                                          .toString(),
+                                  locationId: '',
+                                  locationName:
+                                      _locationController.text.trim().isEmpty
+                                          ? 'Nhật ký'
+                                          : _locationController.text.trim(),
+                                  date: DateFormat(
+                                    'yyyy-MM-dd',
+                                  ).format(DateTime.now()),
+                                  images:
+                                      _pickedImages.map((e) => e.path).toList(),
+                                  notes: _notesController.text.trim(),
+                                );
+                                setState(() {
+                                  diaryEntries.insert(0, newEntry);
+                                });
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Đã thêm nhật ký (tạm thời)'),
+                                  ),
+                                );
+                              },
+                              child: const Text('Lưu'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
+                ),
           ),
     );
+  }
+
+  void _showEditEntryDialog(BuildContext context, int entryIndex) {
+    final entry = diaryEntries[entryIndex];
+    _locationController.text = entry.locationName;
+    _notesController.text = entry.notes;
+    _pickedImages = entry.images.map((p) => XFile(p)).toList();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder:
+          (context) => StatefulBuilder(
+            builder:
+                (context, setSheetState) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Chỉnh sửa nhật ký',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 120,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _pickedImages.length + 1,
+                            itemBuilder: (context, index) {
+                              final isAddTile = index == 0;
+                              if (isAddTile) {
+                                return Container(
+                                  width: 120,
+                                  margin: const EdgeInsets.only(right: 8),
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      final files = await _picker
+                                          .pickMultiImage(imageQuality: 85);
+                                      if (files.isNotEmpty) {
+                                        setSheetState(
+                                          () =>
+                                              _pickedImages = [
+                                                ..._pickedImages,
+                                                ...files,
+                                              ],
+                                        );
+                                      }
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    child: const Icon(Icons.add),
+                                  ),
+                                );
+                              }
+                              final realIndex = index - 1;
+                              return Container(
+                                width: 120,
+                                margin: const EdgeInsets.only(right: 8),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child:
+                                          kIsWeb
+                                              ? Image.network(
+                                                _pickedImages[realIndex].path,
+                                                fit: BoxFit.cover,
+                                              )
+                                              : Image.file(
+                                                File(
+                                                  _pickedImages[realIndex].path,
+                                                ),
+                                                fit: BoxFit.cover,
+                                              ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: Material(
+                                        color: Colors.black45,
+                                        shape: const CircleBorder(),
+                                        child: InkWell(
+                                          customBorder: const CircleBorder(),
+                                          onTap: () {
+                                            setSheetState(() {
+                                              _pickedImages.removeAt(realIndex);
+                                            });
+                                          },
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: Icon(
+                                              Icons.close,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final photo = await _picker.pickImage(
+                                    source: ImageSource.camera,
+                                    imageQuality: 85,
+                                  );
+                                  if (photo != null) {
+                                    setSheetState(
+                                      () =>
+                                          _pickedImages = [
+                                            ..._pickedImages,
+                                            photo,
+                                          ],
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.camera_alt),
+                                label: const Text('Chụp ảnh'),
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () async {
+                                  final files = await _picker.pickMultiImage(
+                                    imageQuality: 85,
+                                  );
+                                  if (files.isNotEmpty) {
+                                    setSheetState(
+                                      () =>
+                                          _pickedImages = [
+                                            ..._pickedImages,
+                                            ...files,
+                                          ],
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.image),
+                                label: const Text('Thư viện'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: _locationController,
+                          decoration: const InputDecoration(
+                            labelText: 'Địa điểm',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _notesController,
+                          decoration: const InputDecoration(
+                            labelText: 'Ghi chú',
+                            border: OutlineInputBorder(),
+                          ),
+                          maxLines: 4,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Hủy'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                final updated = DiaryEntry(
+                                  id: entry.id,
+                                  locationId: '',
+                                  locationName:
+                                      _locationController.text.trim().isEmpty
+                                          ? 'Nhật ký'
+                                          : _locationController.text.trim(),
+                                  date: entry.date,
+                                  images:
+                                      _pickedImages.map((e) => e.path).toList(),
+                                  notes: _notesController.text.trim(),
+                                );
+                                setState(() {
+                                  diaryEntries[entryIndex] = updated;
+                                });
+                                setSheetState(() {
+                                  _pickedImages = [];
+                                  _locationController.clear();
+                                  _notesController.clear();
+                                });
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Đã cập nhật nhật ký'),
+                                  ),
+                                );
+                              },
+                              child: const Text('Lưu'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          ),
+    );
+  }
+
+  void _deleteEntry(int index) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Xóa nhật ký'),
+            content: const Text('Bạn có chắc muốn xóa mục này?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Hủy'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Xóa'),
+              ),
+            ],
+          ),
+    );
+    if (confirm == true) {
+      setState(() {
+        diaryEntries.removeAt(index);
+      });
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Đã xóa nhật ký')));
+    }
   }
 }
