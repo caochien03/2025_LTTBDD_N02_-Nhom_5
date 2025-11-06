@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import '../localization/app_localizations.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key});
@@ -9,6 +10,7 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final navigationProvider = Provider.of<NavigationProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
@@ -34,11 +36,23 @@ class CustomBottomNavBar extends StatelessWidget {
       },
       selectedItemColor: Theme.of(context).primaryColor,
       unselectedItemColor: Colors.grey,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        BottomNavigationBarItem(icon: Icon(Icons.explore), label: 'Explore'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorites'),
-        BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Diary'),
+      items: [
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person),
+          label: l10n.profile,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.explore),
+          label: l10n.explore,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.favorite),
+          label: l10n.favorites,
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.book),
+          label: l10n.diary,
+        ),
       ],
     );
   }

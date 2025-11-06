@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/location.dart';
 import '../../data/locations_data.dart';
 import '../../widgets/bottom_nav_bar.dart';
+import '../../localization/app_localizations.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -229,6 +230,7 @@ class _FavoritesPageState extends State<FavoritesPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Column(
         children: [
@@ -240,7 +242,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Tất cả'),
+                    Text(l10n.allFavorites),
                     const SizedBox(width: 8),
                     Chip(
                       label: Text('${favoriteLocations.length}'),
@@ -255,7 +257,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Wishlist'),
+                    Text(l10n.wishlist),
                     const SizedBox(width: 8),
                     Chip(
                       label: Text('${wishlistLocations.length}'),
@@ -270,7 +272,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Kế hoạch'),
+                    Text(l10n.planned),
                     const SizedBox(width: 8),
                     Chip(
                       label: Text('${plannedLocations.length}'),
@@ -285,7 +287,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Đã đến'),
+                    Text(l10n.visited),
                     const SizedBox(width: 8),
                     Chip(
                       label: Text('${visitedLocations.length}'),
@@ -306,7 +308,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 favoriteLocations.isEmpty
                     ? buildEmptyState(
                       Icons.favorite_border,
-                      'Chưa có địa điểm yêu thích nào',
+                      l10n.noFavoriteLocations,
                     )
                     : ListView.builder(
                       padding: const EdgeInsets.all(16),
@@ -319,7 +321,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 wishlistLocations.isEmpty
                     ? buildEmptyState(
                       Icons.favorite_border,
-                      'Chưa có địa điểm trong wishlist',
+                      l10n.noWishlistLocations,
                     )
                     : ListView.builder(
                       padding: const EdgeInsets.all(16),
@@ -332,7 +334,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 plannedLocations.isEmpty
                     ? buildEmptyState(
                       Icons.calendar_today,
-                      'Chưa có kế hoạch du lịch nào',
+                      l10n.noPlannedLocations,
                     )
                     : ListView.builder(
                       padding: const EdgeInsets.all(16),
@@ -345,7 +347,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 visitedLocations.isEmpty
                     ? buildEmptyState(
                       Icons.check_circle,
-                      'Chưa đến địa điểm nào',
+                      l10n.noVisitedLocations,
                     )
                     : ListView.builder(
                       padding: const EdgeInsets.all(16),
@@ -371,9 +373,9 @@ class _FavoritesPageState extends State<FavoritesPage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Ghi chú kế hoạch',
-                          style: TextStyle(
+                        Text(
+                          l10n.planNotes,
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -393,9 +395,9 @@ class _FavoritesPageState extends State<FavoritesPage>
                     const SizedBox(height: 16),
                     TextField(
                       controller: _notesController,
-                      decoration: const InputDecoration(
-                        hintText: 'Thêm ghi chú về kế hoạch du lịch của bạn...',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        hintText: l10n.planNotesPlaceholder,
+                        border: const OutlineInputBorder(),
                       ),
                       maxLines: 5,
                     ),
@@ -411,12 +413,12 @@ class _FavoritesPageState extends State<FavoritesPage>
                               _notesController.clear();
                             });
                           },
-                          child: const Text('Hủy'),
+                          child: Text(l10n.cancel),
                         ),
                         const SizedBox(width: 8),
                         ElevatedButton(
                           onPressed: saveNotes,
-                          child: const Text('Lưu'),
+                          child: Text(l10n.save),
                         ),
                       ],
                     ),

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../models/diary_entry.dart';
 import '../../data/diary_data.dart';
+import '../../localization/app_localizations.dart';
 
 class DiaryPage extends StatefulWidget {
   const DiaryPage({super.key});
@@ -37,10 +38,11 @@ class _DiaryPageState extends State<DiaryPage> {
     super.dispose();
   }
 
-  String formatDate(String dateString) {
+  String formatDate(String dateString, BuildContext context) {
     try {
       final date = DateTime.parse(dateString);
-      return DateFormat('dd MMMM yyyy', 'vi').format(date);
+      final locale = Localizations.localeOf(context);
+      return DateFormat('dd MMMM yyyy', locale.languageCode).format(date);
     } catch (e) {
       return dateString;
     }
@@ -87,7 +89,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  formatDate(entry.date),
+                                  formatDate(entry.date, context),
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                     fontSize: 14,
@@ -237,15 +239,16 @@ class _DiaryPageState extends State<DiaryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Nhật Ký Du Lịch'),
+        title: Text(l10n.diaryTitle),
         actions: [
           IconButton(
             onPressed: () {
               _showAddEntryDialog(context);
             },
-            tooltip: 'Thêm',
+            tooltip: l10n.add,
             icon: const Icon(Icons.add, color: Colors.white),
           ),
         ],
@@ -259,7 +262,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     Icon(Icons.camera_alt, size: 64, color: Colors.grey[400]),
                     const SizedBox(height: 16),
                     Text(
-                      'Chưa có nhật ký nào',
+                      l10n.noDiaryEntries,
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 16,
@@ -268,7 +271,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Hãy thêm ảnh và ghi chú về chuyến đi của bạn',
+                      l10n.addPhotosAndNotes,
                       style: TextStyle(color: Colors.grey[600], fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
@@ -293,7 +296,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            formatDate(entry.date),
+                            formatDate(entry.date, context),
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 14,
@@ -335,14 +338,14 @@ class _DiaryPageState extends State<DiaryPage> {
                                       }
                                     },
                                     itemBuilder:
-                                        (context) => const [
+                                        (context) => [
                                           PopupMenuItem(
                                             value: 'edit',
-                                            child: Text('Chỉnh sửa'),
+                                            child: Text(l10n.edit),
                                           ),
                                           PopupMenuItem(
                                             value: 'delete',
-                                            child: Text('Xóa'),
+                                            child: Text(l10n.delete),
                                           ),
                                         ],
                                   ),
@@ -466,7 +469,9 @@ class _DiaryPageState extends State<DiaryPage> {
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Chip(
-                                  label: Text('${entry.images.length} ảnh'),
+                                  label: Text(
+                                    '${entry.images.length} ${l10n.photos}',
+                                  ),
                                   backgroundColor: Colors.grey[200],
                                 ),
                               ),
@@ -484,6 +489,7 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   void _showAddEntryDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -507,9 +513,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'Thêm Nhật Ký Mới',
-                              style: TextStyle(
+                            Text(
+                              l10n.addNewDiaryEntry,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -528,9 +534,12 @@ class _DiaryPageState extends State<DiaryPage> {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Chọn ảnh từ thư viện hoặc chụp ảnh mới',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                        Text(
+                          l10n.choosePhotosOrTakeNew,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         if (_pickedImages.isNotEmpty) ...[
@@ -612,7 +621,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   }
                                 },
                                 icon: const Icon(Icons.camera_alt),
-                                label: const Text('Chụp ảnh'),
+                                label: Text(l10n.takePhoto),
                                 style: OutlinedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 32,
@@ -638,7 +647,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   }
                                 },
                                 icon: const Icon(Icons.image),
-                                label: const Text('Thư viện'),
+                                label: Text(l10n.library),
                                 style: OutlinedButton.styleFrom(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 32,
@@ -651,19 +660,19 @@ class _DiaryPageState extends State<DiaryPage> {
                         const SizedBox(height: 16),
                         TextField(
                           controller: _locationController,
-                          decoration: const InputDecoration(
-                            labelText: 'Địa điểm',
-                            hintText: 'Ví dụ: Vịnh Hạ Long',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.location,
+                            hintText: l10n.locationPlaceholder,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                         const SizedBox(height: 12),
                         TextField(
                           controller: _notesController,
-                          decoration: const InputDecoration(
-                            labelText: 'Ghi chú',
-                            hintText: 'Thêm ghi chú cho ảnh...',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.notes,
+                            hintText: l10n.notesPlaceholder,
+                            border: const OutlineInputBorder(),
                           ),
                           maxLines: 4,
                         ),
@@ -680,16 +689,16 @@ class _DiaryPageState extends State<DiaryPage> {
                                 });
                                 Navigator.pop(context);
                               },
-                              child: const Text('Hủy'),
+                              child: Text(l10n.cancel),
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () {
                                 if (_pickedImages.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        'Vui lòng chọn hoặc chụp ít nhất 1 ảnh',
+                                        l10n.atLeastOnePhotoRequired,
                                       ),
                                     ),
                                   );
@@ -702,7 +711,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   locationId: '',
                                   locationName:
                                       _locationController.text.trim().isEmpty
-                                          ? 'Nhật ký'
+                                          ? l10n.diaryDefaultName
                                           : _locationController.text.trim(),
                                   date: DateFormat(
                                     'yyyy-MM-dd',
@@ -721,12 +730,12 @@ class _DiaryPageState extends State<DiaryPage> {
                                 });
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Đã thêm nhật ký (tạm thời)'),
+                                  SnackBar(
+                                    content: Text(l10n.addedSuccessfully),
                                   ),
                                 );
                               },
-                              child: const Text('Lưu'),
+                              child: Text(l10n.save),
                             ),
                           ],
                         ),
@@ -739,6 +748,7 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   void _showEditEntryDialog(BuildContext context, int entryIndex) {
+    final l10n = AppLocalizations.of(context)!;
     final entry = diaryEntries[entryIndex];
     _locationController.text = entry.locationName;
     _notesController.text = entry.notes;
@@ -766,9 +776,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'Chỉnh sửa nhật ký',
-                              style: TextStyle(
+                            Text(
+                              l10n.editDiaryEntry,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -893,7 +903,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   }
                                 },
                                 icon: const Icon(Icons.camera_alt),
-                                label: const Text('Chụp ảnh'),
+                                label: Text(l10n.takePhoto),
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -914,7 +924,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   }
                                 },
                                 icon: const Icon(Icons.image),
-                                label: const Text('Thư viện'),
+                                label: Text(l10n.library),
                               ),
                             ),
                           ],
@@ -922,17 +932,17 @@ class _DiaryPageState extends State<DiaryPage> {
                         const SizedBox(height: 16),
                         TextField(
                           controller: _locationController,
-                          decoration: const InputDecoration(
-                            labelText: 'Địa điểm',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.location,
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                         const SizedBox(height: 12),
                         TextField(
                           controller: _notesController,
-                          decoration: const InputDecoration(
-                            labelText: 'Ghi chú',
-                            border: OutlineInputBorder(),
+                          decoration: InputDecoration(
+                            labelText: l10n.notes,
+                            border: const OutlineInputBorder(),
                           ),
                           maxLines: 4,
                         ),
@@ -949,7 +959,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                 });
                                 Navigator.pop(context);
                               },
-                              child: const Text('Hủy'),
+                              child: Text(l10n.cancel),
                             ),
                             const SizedBox(width: 8),
                             ElevatedButton(
@@ -959,7 +969,7 @@ class _DiaryPageState extends State<DiaryPage> {
                                   locationId: '',
                                   locationName:
                                       _locationController.text.trim().isEmpty
-                                          ? 'Nhật ký'
+                                          ? l10n.diaryDefaultName
                                           : _locationController.text.trim(),
                                   date: entry.date,
                                   images:
@@ -976,12 +986,12 @@ class _DiaryPageState extends State<DiaryPage> {
                                 });
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Đã cập nhật nhật ký'),
+                                  SnackBar(
+                                    content: Text(l10n.updatedSuccessfully),
                                   ),
                                 );
                               },
-                              child: const Text('Lưu'),
+                              child: Text(l10n.save),
                             ),
                           ],
                         ),
@@ -994,20 +1004,21 @@ class _DiaryPageState extends State<DiaryPage> {
   }
 
   void _deleteEntry(int index) async {
+    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Xóa nhật ký'),
-            content: const Text('Bạn có chắc muốn xóa mục này?'),
+            title: Text(l10n.deleteDiaryEntry),
+            content: Text(l10n.confirmDelete),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Hủy'),
+                child: Text(l10n.cancel),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Xóa'),
+                child: Text(l10n.delete),
               ),
             ],
           ),
@@ -1018,7 +1029,7 @@ class _DiaryPageState extends State<DiaryPage> {
       });
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Đã xóa nhật ký')));
+      ).showSnackBar(SnackBar(content: Text(l10n.deletedSuccessfully)));
     }
   }
 }

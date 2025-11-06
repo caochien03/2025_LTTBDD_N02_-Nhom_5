@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/locale_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final currentLocale = localeProvider.currentLocale;
+    
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -56,9 +62,9 @@ class ProfilePage extends StatelessWidget {
                           color: Theme.of(context).primaryColor,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Thông Tin Nhóm',
-                          style: TextStyle(
+                        Text(
+                          l10n.teamInfo,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -130,9 +136,9 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Liên Hệ',
-                      style: TextStyle(
+                    Text(
+                      l10n.contact,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -171,23 +177,21 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Về TravelMate',
-                      style: TextStyle(
+                    Text(
+                      l10n.aboutApp,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Ứng dụng đồng hành du lịch của bạn',
+                      l10n.aboutAppDescription,
                       style: TextStyle(color: Colors.grey[600], fontSize: 14),
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'TravelMate là ứng dụng giúp bạn khám phá các địa điểm du lịch đẹp nhất Việt Nam. '
-                      'Lưu lại những địa điểm yêu thích, lập kế hoạch chuyến đi và ghi lại những kỷ niệm '
-                      'đáng nhớ qua nhật ký du lịch của bạn.',
+                      l10n.aboutAppText,
                       style: TextStyle(
                         color: Colors.grey[700],
                         fontSize: 14,
@@ -206,9 +210,9 @@ class ProfilePage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Cài Đặt',
-                      style: TextStyle(
+                    Text(
+                      l10n.settings,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -230,12 +234,12 @@ class ProfilePage extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'Chế độ tối',
-                                      style: TextStyle(fontSize: 14),
+                                    Text(
+                                      l10n.darkMode,
+                                      style: const TextStyle(fontSize: 14),
                                     ),
                                     Text(
-                                      'Bật/tắt giao diện tối',
+                                      l10n.toggleDarkMode,
                                       style: TextStyle(
                                         color: Colors.grey[600],
                                         fontSize: 12,
@@ -271,12 +275,14 @@ class ProfilePage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Ngôn ngữ',
-                                style: TextStyle(fontSize: 14),
+                              Text(
+                                l10n.language,
+                                style: const TextStyle(fontSize: 14),
                               ),
                               Text(
-                                'Tiếng Việt',
+                                currentLocale.languageCode == 'vi' 
+                                    ? l10n.vietnamese 
+                                    : l10n.english,
                                 style: TextStyle(
                                   color: Colors.grey[600],
                                   fontSize: 12,
@@ -284,6 +290,38 @@ class ProfilePage extends StatelessWidget {
                               ),
                             ],
                           ),
+                        ),
+                        PopupMenuButton<Locale>(
+                          icon: const Icon(Icons.arrow_drop_down),
+                          onSelected: (Locale locale) {
+                            localeProvider.setLocale(locale);
+                          },
+                          itemBuilder: (BuildContext context) => [
+                            PopupMenuItem<Locale>(
+                              value: const Locale('vi'),
+                              child: Row(
+                                children: [
+                                  if (currentLocale.languageCode == 'vi')
+                                    const Icon(Icons.check, size: 20),
+                                  if (currentLocale.languageCode == 'vi')
+                                    const SizedBox(width: 8),
+                                  Text(l10n.vietnamese),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem<Locale>(
+                              value: const Locale('en'),
+                              child: Row(
+                                children: [
+                                  if (currentLocale.languageCode == 'en')
+                                    const Icon(Icons.check, size: 20),
+                                  if (currentLocale.languageCode == 'en')
+                                    const SizedBox(width: 8),
+                                  Text(l10n.english),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -311,12 +349,12 @@ class ProfilePage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.logout),
-                    SizedBox(width: 8),
-                    Text('Đăng xuất'),
+                    const Icon(Icons.logout),
+                    const SizedBox(width: 8),
+                    Text(l10n.signOut),
                   ],
                 ),
               ),

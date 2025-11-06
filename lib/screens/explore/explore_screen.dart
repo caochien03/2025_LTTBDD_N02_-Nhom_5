@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/location.dart';
 import '../../data/locations_data.dart';
 import '../../widgets/bottom_nav_bar.dart';
+import '../../localization/app_localizations.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -12,7 +13,7 @@ class ExplorePage extends StatefulWidget {
 
 class _ExplorePageState extends State<ExplorePage> {
   String searchQuery = '';
-  String selectedProvince = 'Tất cả';
+  String? selectedProvince;
   List<Location> locations = [];
 
   @override
@@ -29,7 +30,7 @@ class _ExplorePageState extends State<ExplorePage> {
             searchQuery.toLowerCase(),
           );
       final matchesProvince =
-          selectedProvince == 'Tất cả' || location.province == selectedProvince;
+          selectedProvince == null || location.province == selectedProvince;
       return matchesSearch && matchesProvince;
     }).toList();
   }
@@ -48,6 +49,7 @@ class _ExplorePageState extends State<ExplorePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final provinces = getProvinces();
 
     return Scaffold(
@@ -71,11 +73,11 @@ class _ExplorePageState extends State<ExplorePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Tìm kiếm địa điểm...',
-                  prefixIcon: Icon(Icons.search),
+                decoration: InputDecoration(
+                  hintText: l10n.searchPlaceholder,
+                  prefixIcon: const Icon(Icons.search),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
+                  contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 12,
                   ),
@@ -96,9 +98,26 @@ class _ExplorePageState extends State<ExplorePage> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: provinces.length,
+              itemCount: provinces.length + 1,
               itemBuilder: (context, index) {
-                final province = provinces[index];
+                if (index == 0) {
+                  final isSelected = selectedProvince == null;
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: FilterChip(
+                      label: Text(l10n.all),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        setState(() {
+                          selectedProvince = null;
+                        });
+                      },
+                      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                      checkmarkColor: Theme.of(context).primaryColor,
+                    ),
+                  );
+                }
+                final province = provinces[index - 1];
                 final isSelected = selectedProvince == province;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
@@ -135,7 +154,7 @@ class _ExplorePageState extends State<ExplorePage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Không tìm thấy địa điểm nào',
+                            l10n.noLocationsFound,
                             style: TextStyle(
                               color: Colors.grey[600],
                               fontSize: 16,
@@ -268,6 +287,7 @@ class _ExplorePageState extends State<ExplorePage> {
   }
 
   void _showLocationDetail(BuildContext context, Location location) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -286,9 +306,9 @@ class _ExplorePageState extends State<ExplorePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Chi tiết địa điểm',
-                      style: TextStyle(
+                    Text(
+                      l10n.locationDetails,
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -348,9 +368,9 @@ class _ExplorePageState extends State<ExplorePage> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Mô tả',
-                          style: TextStyle(
+                        Text(
+                          l10n.description,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -364,9 +384,9 @@ class _ExplorePageState extends State<ExplorePage> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Đặc sản',
-                          style: TextStyle(
+                        Text(
+                          l10n.specialties,
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -398,8 +418,8 @@ class _ExplorePageState extends State<ExplorePage> {
                             ),
                             child: Text(
                               location.isFavorite
-                                  ? 'Xóa khỏi yêu thích'
-                                  : 'Thêm vào yêu thích',
+                                  ? l10n.removeFromFavorites
+                                  : l10n.addToFavorites,
                             ),
                           ),
                         ),

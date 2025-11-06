@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -92,6 +93,7 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Stack(
         children: [
@@ -145,9 +147,9 @@ class _AuthScreenState extends State<AuthScreen>
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Chào mừng đến với TravelMate',
-                          style: TextStyle(fontSize: 16, color: Colors.white70),
+                        Text(
+                          l10n.welcomeMessage,
+                          style: const TextStyle(fontSize: 16, color: Colors.white70),
                         ),
                         const SizedBox(height: 32),
 
@@ -162,9 +164,9 @@ class _AuthScreenState extends State<AuthScreen>
                             labelColor: Colors.white,
                             unselectedLabelColor: Colors.white70,
                             indicatorColor: Colors.white,
-                            tabs: const [
-                              Tab(text: 'Đăng nhập'),
-                              Tab(text: 'Đăng ký'),
+                            tabs: [
+                              Tab(text: l10n.login),
+                              Tab(text: l10n.register),
                             ],
                           ),
                         ),
@@ -191,6 +193,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildLoginForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Form(
       key: _loginFormKey,
       child: Column(
@@ -200,19 +203,19 @@ class _AuthScreenState extends State<AuthScreen>
           TextFormField(
             controller: _loginEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              prefixIcon: Icon(Icons.email),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.email,
+              prefixIcon: const Icon(Icons.email),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập email';
+                return l10n.pleaseEnterEmail;
               }
               if (!value.contains('@')) {
-                return 'Email không hợp lệ';
+                return l10n.invalidEmail;
               }
               return null;
             },
@@ -223,19 +226,19 @@ class _AuthScreenState extends State<AuthScreen>
           TextFormField(
             controller: _loginPasswordController,
             obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Mật khẩu',
-              prefixIcon: Icon(Icons.lock),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.password,
+              prefixIcon: const Icon(Icons.lock),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập mật khẩu';
+                return l10n.pleaseEnterPassword;
               }
               if (value.length < 6) {
-                return 'Mật khẩu phải có ít nhất 6 ký tự';
+                return l10n.passwordMinLength;
               }
               return null;
             },
@@ -249,7 +252,7 @@ class _AuthScreenState extends State<AuthScreen>
               onPressed: () {
                 // TODO: Add forgot password functionality
               },
-              child: const Text('Quên mật khẩu?'),
+              child: Text(l10n.forgotPassword),
             ),
           ),
           const SizedBox(height: 24),
@@ -275,7 +278,7 @@ class _AuthScreenState extends State<AuthScreen>
                         color: Colors.white,
                       ),
                     )
-                    : const Text('Đăng nhập', style: TextStyle(fontSize: 16)),
+                    : Text(l10n.login, style: const TextStyle(fontSize: 16)),
           ),
           const SizedBox(height: 16),
 
@@ -288,9 +291,9 @@ class _AuthScreenState extends State<AuthScreen>
                       // TODO: Add Google sign in
                     },
             icon: const Icon(Icons.g_mobiledata, size: 24, color: Colors.white),
-            label: const Text(
-              'Đăng nhập với Google',
-              style: TextStyle(color: Colors.white),
+            label: Text(
+              l10n.signInWithGoogle,
+              style: const TextStyle(color: Colors.white),
             ),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.white70),
@@ -306,6 +309,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildRegisterForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Form(
       key: _registerFormKey,
       child: Column(
@@ -314,16 +318,16 @@ class _AuthScreenState extends State<AuthScreen>
           // Name
           TextFormField(
             controller: _registerNameController,
-            decoration: const InputDecoration(
-              labelText: 'Họ tên',
-              prefixIcon: Icon(Icons.person),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.name,
+              prefixIcon: const Icon(Icons.person),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập họ tên';
+                return l10n.pleaseEnterName;
               }
               return null;
             },
@@ -334,19 +338,19 @@ class _AuthScreenState extends State<AuthScreen>
           TextFormField(
             controller: _registerEmailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              prefixIcon: Icon(Icons.email),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.email,
+              prefixIcon: const Icon(Icons.email),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập email';
+                return l10n.pleaseEnterEmail;
               }
               if (!value.contains('@')) {
-                return 'Email không hợp lệ';
+                return l10n.invalidEmail;
               }
               return null;
             },
@@ -357,19 +361,19 @@ class _AuthScreenState extends State<AuthScreen>
           TextFormField(
             controller: _registerPasswordController,
             obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Mật khẩu',
-              prefixIcon: Icon(Icons.lock),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.password,
+              prefixIcon: const Icon(Icons.lock),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng nhập mật khẩu';
+                return l10n.pleaseEnterPassword;
               }
               if (value.length < 6) {
-                return 'Mật khẩu phải có ít nhất 6 ký tự';
+                return l10n.passwordMinLength;
               }
               return null;
             },
@@ -380,19 +384,19 @@ class _AuthScreenState extends State<AuthScreen>
           TextFormField(
             controller: _registerConfirmPasswordController,
             obscureText: true,
-            decoration: const InputDecoration(
-              labelText: 'Xác nhận mật khẩu',
-              prefixIcon: Icon(Icons.lock_outline),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.confirmPassword,
+              prefixIcon: const Icon(Icons.lock_outline),
+              border: const OutlineInputBorder(),
               filled: true,
               fillColor: Colors.white,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Vui lòng xác nhận mật khẩu';
+                return l10n.pleaseConfirmPassword;
               }
               if (value != _registerPasswordController.text) {
-                return 'Mật khẩu không khớp';
+                return l10n.passwordsDoNotMatch;
               }
               return null;
             },
@@ -420,7 +424,7 @@ class _AuthScreenState extends State<AuthScreen>
                         color: Colors.white,
                       ),
                     )
-                    : const Text('Đăng ký', style: TextStyle(fontSize: 16)),
+                    : Text(l10n.register, style: const TextStyle(fontSize: 16)),
           ),
         ],
       ),
