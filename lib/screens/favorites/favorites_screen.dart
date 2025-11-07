@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/location.dart';
 import '../../data/locations_data.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../localization/app_localizations.dart';
+import '../../providers/locale_provider.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -18,12 +20,34 @@ class _FavoritesPageState extends State<FavoritesPage>
   Location? selectedLocation;
   final TextEditingController _notesController = TextEditingController();
   bool showNotesDialog = false;
+  // Store favorite states separately to preserve them across locale changes
+  Map<String, bool> favoriteStates = {};
+  Map<String, String?> statusStates = {};
+  Map<String, String?> notesStates = {};
 
   @override
   void initState() {
     super.initState();
-    locations = getLocations();
     _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload locations when locale changes, preserving favorite states
+    final newLocations = getLocations(context);
+    locations =
+        newLocations.map((loc) {
+          // Preserve favorite state if it was changed
+          final isFavorite = favoriteStates[loc.id] ?? loc.isFavorite;
+          final status = statusStates[loc.id] ?? loc.status;
+          final notes = notesStates[loc.id] ?? loc.notes;
+          return loc.copyWith(
+            isFavorite: isFavorite,
+            status: status,
+            notes: notes,
+          );
+        }).toList();
   }
 
   @override
@@ -47,6 +71,9 @@ class _FavoritesPageState extends State<FavoritesPage>
 
   void updateLocationStatus(String id, String? status) {
     setState(() {
+      // Save status state
+      statusStates[id] = status;
+      // Update locations
       locations =
           locations.map((loc) {
             if (loc.id == id) {
@@ -60,10 +87,15 @@ class _FavoritesPageState extends State<FavoritesPage>
   void saveNotes() {
     if (selectedLocation != null) {
       setState(() {
+        final locationId = selectedLocation!.id;
+        final notes = _notesController.text.trim();
+        // Save notes state
+        notesStates[locationId] = notes.isEmpty ? null : notes;
+        // Update locations
         locations =
             locations.map((loc) {
-              if (loc.id == selectedLocation!.id) {
-                return loc.copyWith(notes: _notesController.text);
+              if (loc.id == locationId) {
+                return loc.copyWith(notes: notes.isEmpty ? null : notes);
               }
               return loc;
             }).toList();
@@ -231,6 +263,22 @@ class _FavoritesPageState extends State<FavoritesPage>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Watch LocaleProvider to rebuild when locale changes
+    context.watch<LocaleProvider>();
+    // Update locations when locale changes, preserving favorite states
+    final newLocations = getLocations(context);
+    locations =
+        newLocations.map((loc) {
+          // Preserve favorite state if it was changed
+          final isFavorite = favoriteStates[loc.id] ?? loc.isFavorite;
+          final status = statusStates[loc.id] ?? loc.status;
+          final notes = notesStates[loc.id] ?? loc.notes;
+          return loc.copyWith(
+            isFavorite: isFavorite,
+            status: status,
+            notes: notes,
+          );
+        }).toList();
     return Scaffold(
       body: Column(
         children: [
@@ -426,7 +474,7 @@ class _FavoritesPageState extends State<FavoritesPage>
                 ),
               )
               : null,
-              bottomNavigationBar: const CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
 }

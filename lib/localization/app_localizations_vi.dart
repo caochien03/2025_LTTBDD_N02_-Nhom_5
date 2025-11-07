@@ -238,4 +238,31 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get signInWithGoogle => 'Đăng nhập với Google';
+
+  @override
+  String get subject => 'Môn học';
+
+  @override
+  String get subjectName => 'Phát Triển Ứng Dụng Di Động';
+
+  @override
+  String get academicYear => 'Năm học';
+
+  @override
+  String get academicYearValue => '2025-2026';
+
+  @override
+  String get members => 'Thành viên';
+
+  @override
+  String get member1 => 'Nguyễn Cao Chiến - Msv:22010014 - Leader';
+
+  @override
+  String get member2 => 'Hà Thành Đạt - Msv:22010041 - Designer';
+
+  @override
+  String get teamName => 'TravelMate Team';
+
+  @override
+  String get teamSubtitle => 'Nhóm Phát Triển Ứng Dụng Du Lịch';
 }

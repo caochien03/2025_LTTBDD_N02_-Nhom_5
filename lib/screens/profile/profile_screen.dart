@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final localeProvider = Provider.of<LocaleProvider>(context);
     final currentLocale = localeProvider.currentLocale;
-    
+
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -36,13 +36,16 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'TravelMate Team',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Text(
+                  l10n.teamName,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Nhóm Phát Triển Ứng Dụng Du Lịch',
+                  l10n.teamSubtitle,
                   style: TextStyle(color: Colors.grey[600], fontSize: 14),
                 ),
               ],
@@ -77,7 +80,7 @@ class ProfilePage extends StatelessWidget {
                         Icon(Icons.school, size: 18, color: Colors.grey[600]),
                         const SizedBox(width: 8),
                         Text(
-                          'Môn học: Phát Triển Ứng Dụng Di Động',
+                          '${l10n.subject}: ${l10n.subjectName}',
                           style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 14,
@@ -95,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Năm học: 2024-2025',
+                          '${l10n.academicYear}: ${l10n.academicYearValue}',
                           style: TextStyle(
                             color: Colors.grey[700],
                             fontSize: 14,
@@ -105,14 +108,11 @@ class ProfilePage extends StatelessWidget {
                     ),
                     const Divider(height: 32),
                     Text(
-                      'Thành viên:',
+                      '${l10n.members}:',
                       style: TextStyle(color: Colors.grey[700], fontSize: 14),
                     ),
                     const SizedBox(height: 8),
-                    ...[
-                      'Nguyễn Cao Chiến - Msv:22010014 - Leader',
-                      'Hà Thành Đạt - Msv:22010041 - Designer',
-                    ].map(
+                    ...[l10n.member1, l10n.member2].map(
                       (member) => Padding(
                         padding: const EdgeInsets.only(left: 16, bottom: 4),
                         child: Text(
@@ -149,7 +149,7 @@ class ProfilePage extends StatelessWidget {
                         Icon(Icons.email, size: 20, color: Colors.grey[600]),
                         const SizedBox(width: 12),
                         const Text(
-                          'travelmate.team@gmail.com',
+                          '22010014@st.phenikaa-uni.edu.vn',
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -160,7 +160,7 @@ class ProfilePage extends StatelessWidget {
                         Icon(Icons.phone, size: 20, color: Colors.grey[600]),
                         const SizedBox(width: 12),
                         const Text(
-                          '+84 123 456 789',
+                          '+84 329 151 190',
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -280,8 +280,8 @@ class ProfilePage extends StatelessWidget {
                                 style: const TextStyle(fontSize: 14),
                               ),
                               Text(
-                                currentLocale.languageCode == 'vi' 
-                                    ? l10n.vietnamese 
+                                currentLocale.languageCode == 'vi'
+                                    ? l10n.vietnamese
                                     : l10n.english,
                                 style: TextStyle(
                                   color: Colors.grey[600],
@@ -296,32 +296,33 @@ class ProfilePage extends StatelessWidget {
                           onSelected: (Locale locale) {
                             localeProvider.setLocale(locale);
                           },
-                          itemBuilder: (BuildContext context) => [
-                            PopupMenuItem<Locale>(
-                              value: const Locale('vi'),
-                              child: Row(
-                                children: [
-                                  if (currentLocale.languageCode == 'vi')
-                                    const Icon(Icons.check, size: 20),
-                                  if (currentLocale.languageCode == 'vi')
-                                    const SizedBox(width: 8),
-                                  Text(l10n.vietnamese),
-                                ],
-                              ),
-                            ),
-                            PopupMenuItem<Locale>(
-                              value: const Locale('en'),
-                              child: Row(
-                                children: [
-                                  if (currentLocale.languageCode == 'en')
-                                    const Icon(Icons.check, size: 20),
-                                  if (currentLocale.languageCode == 'en')
-                                    const SizedBox(width: 8),
-                                  Text(l10n.english),
-                                ],
-                              ),
-                            ),
-                          ],
+                          itemBuilder:
+                              (BuildContext context) => [
+                                PopupMenuItem<Locale>(
+                                  value: const Locale('vi'),
+                                  child: Row(
+                                    children: [
+                                      if (currentLocale.languageCode == 'vi')
+                                        const Icon(Icons.check, size: 20),
+                                      if (currentLocale.languageCode == 'vi')
+                                        const SizedBox(width: 8),
+                                      Text(l10n.vietnamese),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem<Locale>(
+                                  value: const Locale('en'),
+                                  child: Row(
+                                    children: [
+                                      if (currentLocale.languageCode == 'en')
+                                        const Icon(Icons.check, size: 20),
+                                      if (currentLocale.languageCode == 'en')
+                                        const SizedBox(width: 8),
+                                      Text(l10n.english),
+                                    ],
+                                  ),
+                                ),
+                              ],
                         ),
                       ],
                     ),

@@ -238,4 +238,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get subject => 'Subject';
+
+  @override
+  String get subjectName => 'Mobile Application Development';
+
+  @override
+  String get academicYear => 'Academic year';
+
+  @override
+  String get academicYearValue => '2025-2026';
+
+  @override
+  String get members => 'Members';
+
+  @override
+  String get member1 => 'Nguyen Cao Chien - ID:22010014 - Leader';
+
+  @override
+  String get member2 => 'Ha Thanh Dat - ID:22010041 - Designer';
+
+  @override
+  String get teamName => 'TravelMate Team';
+
+  @override
+  String get teamSubtitle => 'Mobile Application Development Team';
 }

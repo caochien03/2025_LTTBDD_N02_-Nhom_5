@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/location.dart';
 import '../../data/locations_data.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../localization/app_localizations.dart';
+import '../../providers/locale_provider.dart';
 
 class ExplorePage extends StatefulWidget {
   const ExplorePage({super.key});
@@ -15,11 +17,29 @@ class _ExplorePageState extends State<ExplorePage> {
   String searchQuery = '';
   String? selectedProvince;
   List<Location> locations = [];
+  // Store favorite states separately to preserve them across locale changes
+  Map<String, bool> favoriteStates = {};
+  Map<String, String?> statusStates = {};
 
   @override
-  void initState() {
-    super.initState();
-    locations = getLocations();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload locations when locale changes, preserving favorite states
+    final newLocations = getLocations(context);
+    locations =
+        newLocations.map((loc) {
+          // Preserve favorite state if it was changed
+          final isFavorite = favoriteStates[loc.id] ?? loc.isFavorite;
+          final status = statusStates[loc.id] ?? loc.status;
+          return loc.copyWith(isFavorite: isFavorite, status: status);
+        }).toList();
+    // Try to find matching province in new locale, or reset to null
+    if (selectedProvince != null) {
+      final provinces = getProvinces(context);
+      if (!provinces.contains(selectedProvince)) {
+        selectedProvince = null;
+      }
+    }
   }
 
   List<Location> get filteredLocations {
@@ -37,10 +57,15 @@ class _ExplorePageState extends State<ExplorePage> {
 
   void toggleFavorite(String id) {
     setState(() {
+      final currentLocation = locations.firstWhere((loc) => loc.id == id);
+      final newFavoriteState = !currentLocation.isFavorite;
+      // Save favorite state
+      favoriteStates[id] = newFavoriteState;
+      // Update locations
       locations =
           locations.map((loc) {
             if (loc.id == id) {
-              return loc.copyWith(isFavorite: !loc.isFavorite);
+              return loc.copyWith(isFavorite: newFavoriteState);
             }
             return loc;
           }).toList();
@@ -50,7 +75,18 @@ class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final provinces = getProvinces();
+    // Watch LocaleProvider to rebuild when locale changes
+    context.watch<LocaleProvider>();
+    // Update locations when locale changes, preserving favorite states
+    final newLocations = getLocations(context);
+    locations =
+        newLocations.map((loc) {
+          // Preserve favorite state if it was changed
+          final isFavorite = favoriteStates[loc.id] ?? loc.isFavorite;
+          final status = statusStates[loc.id] ?? loc.status;
+          return loc.copyWith(isFavorite: isFavorite, status: status);
+        }).toList();
+    final provinces = getProvinces(context);
 
     return Scaffold(
       body: Column(
@@ -112,7 +148,9 @@ class _ExplorePageState extends State<ExplorePage> {
                           selectedProvince = null;
                         });
                       },
-                      selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                      selectedColor: Theme.of(
+                        context,
+                      ).primaryColor.withOpacity(0.2),
                       checkmarkColor: Theme.of(context).primaryColor,
                     ),
                   );

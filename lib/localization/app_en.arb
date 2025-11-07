@@ -75,5 +75,14 @@
   "pleaseEnterName": "Please enter name",
   "pleaseConfirmPassword": "Please confirm password",
   "passwordsDoNotMatch": "Passwords do not match",
-  "signInWithGoogle": "Sign in with Google"
+  "signInWithGoogle": "Sign in with Google",
+  "subject": "Subject",
+  "subjectName": "Mobile Application Development",
+  "academicYear": "Academic year",
+  "academicYearValue": "2025-2026",
+  "members": "Members",
+  "member1": "Nguyen Cao Chien - ID:22010014 - Leader",
+  "member2": "Ha Thanh Dat - ID:22010041 - Designer",
+  "teamName": "TravelMate Team",
+  "teamSubtitle": "Mobile Application Development Team"
 }

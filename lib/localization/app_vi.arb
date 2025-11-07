@@ -75,5 +75,14 @@
   "pleaseEnterName": "Vui lòng nhập họ tên",
   "pleaseConfirmPassword": "Vui lòng xác nhận mật khẩu",
   "passwordsDoNotMatch": "Mật khẩu không khớp",
-  "signInWithGoogle": "Đăng nhập với Google"
+  "signInWithGoogle": "Đăng nhập với Google",
+  "subject": "Môn học",
+  "subjectName": "Phát Triển Ứng Dụng Di Động",
+  "academicYear": "Năm học",
+  "academicYearValue": "2025-2026",
+  "members": "Thành viên",
+  "member1": "Nguyễn Cao Chiến - Msv:22010014 - Leader",
+  "member2": "Hà Thành Đạt - Msv:22010041 - Designer",
+  "teamName": "TravelMate Team",
+  "teamSubtitle": "Nhóm Phát Triển Ứng Dụng Du Lịch"
 }

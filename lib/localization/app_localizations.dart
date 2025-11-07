@@ -556,6 +556,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in with Google'**
   String get signInWithGoogle;
+
+  /// No description provided for @subject.
+  ///
+  /// In en, this message translates to:
+  /// **'Subject'**
+  String get subject;
+
+  /// No description provided for @subjectName.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Application Development'**
+  String get subjectName;
+
+  /// No description provided for @academicYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Academic year'**
+  String get academicYear;
+
+  /// No description provided for @academicYearValue.
+  ///
+  /// In en, this message translates to:
+  /// **'2025-2026'**
+  String get academicYearValue;
+
+  /// No description provided for @members.
+  ///
+  /// In en, this message translates to:
+  /// **'Members'**
+  String get members;
+
+  /// No description provided for @member1.
+  ///
+  /// In en, this message translates to:
+  /// **'Nguyen Cao Chien - ID:22010014 - Leader'**
+  String get member1;
+
+  /// No description provided for @member2.
+  ///
+  /// In en, this message translates to:
+  /// **'Ha Thanh Dat - ID:22010041 - Designer'**
+  String get member2;
+
+  /// No description provided for @teamName.
+  ///
+  /// In en, this message translates to:
+  /// **'TravelMate Team'**
+  String get teamName;
+
+  /// No description provided for @teamSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Application Development Team'**
+  String get teamSubtitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
