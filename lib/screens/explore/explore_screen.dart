@@ -286,13 +286,19 @@ class _ExplorePageState extends State<ExplorePage> {
                                           Icon(
                                             Icons.location_on,
                                             size: 16,
-                                            color: Colors.grey[600],
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.7),
                                           ),
                                           const SizedBox(width: 4),
                                           Text(
                                             location.province,
                                             style: TextStyle(
-                                              color: Colors.grey[600],
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.7),
                                               fontSize: 14,
                                             ),
                                           ),
@@ -302,7 +308,10 @@ class _ExplorePageState extends State<ExplorePage> {
                                       Text(
                                         location.description,
                                         style: TextStyle(
-                                          color: Colors.grey[600],
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.7),
                                           fontSize: 14,
                                         ),
                                         maxLines: 2,
@@ -334,9 +343,11 @@ class _ExplorePageState extends State<ExplorePage> {
           (context) => Container(
             height: MediaQuery.of(context).size.height * 0.85,
             padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -346,9 +357,10 @@ class _ExplorePageState extends State<ExplorePage> {
                   children: [
                     Text(
                       l10n.locationDetails,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     IconButton(
@@ -373,8 +385,19 @@ class _ExplorePageState extends State<ExplorePage> {
                             errorBuilder: (context, error, stackTrace) {
                               return Container(
                                 height: 250,
-                                color: Colors.grey[300],
-                                child: const Icon(Icons.broken_image),
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface.withOpacity(0.1)
+                                        : Colors.grey[300]!,
+                                child: Icon(
+                                  Icons.broken_image,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.5),
+                                ),
                               );
                             },
                           ),
@@ -382,9 +405,10 @@ class _ExplorePageState extends State<ExplorePage> {
                         const SizedBox(height: 16),
                         Text(
                           location.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -393,13 +417,17 @@ class _ExplorePageState extends State<ExplorePage> {
                             Icon(
                               Icons.location_on,
                               size: 18,
-                              color: Colors.grey[600],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               location.province,
                               style: TextStyle(
-                                color: Colors.grey[600],
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.7),
                                 fontSize: 16,
                               ),
                             ),
@@ -408,25 +436,29 @@ class _ExplorePageState extends State<ExplorePage> {
                         const SizedBox(height: 16),
                         Text(
                           l10n.description,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           location.description,
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.8),
                             fontSize: 14,
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           l10n.specialties,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -438,7 +470,14 @@ class _ExplorePageState extends State<ExplorePage> {
                                   .map(
                                     (specialty) => Chip(
                                       label: Text(specialty),
-                                      backgroundColor: Colors.grey[200],
+                                      backgroundColor:
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withOpacity(0.1)
+                                              : Colors.grey[200]!,
                                     ),
                                   )
                                   .toList(),

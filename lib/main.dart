@@ -8,6 +8,8 @@ import 'localization/app_localizations.dart';
 import 'providers/navigation_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/locale_provider.dart';
+import 'providers/theme_provider.dart';
+import 'themes/app_themes.dart';
 import 'router/app_router.dart';
 import 'screens/auth/auth_screen.dart';
 
@@ -29,50 +31,29 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: Builder(
-        builder:
-            (context) => MaterialApp(
-              title: 'BTL TravelMate',
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.light(
-                  primary: const Color(0xFF2563EB),
-                  secondary: const Color(0xFFEA580C),
-                  background: const Color(0xFFF8FAFC),
-                  surface: Colors.white,
-                  onPrimary: Colors.white,
-                  onSecondary: Colors.white,
-                  onBackground: const Color(0xFF1E293B),
-                  onSurface: const Color(0xFF1E293B),
-                ),
-                appBarTheme: const AppBarTheme(
-                  backgroundColor: Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  elevation: 0,
-                  centerTitle: true,
-                ),
-                bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-                  backgroundColor: Colors.white,
-                  selectedItemColor: Color(0xFF2563EB),
-                  unselectedItemColor: Color(0xFF94A3B8),
-                  showSelectedLabels: true,
-                  showUnselectedLabels: true,
-                  type: BottomNavigationBarType.fixed,
-                  elevation: 8,
-                ),
-              ),
-              debugShowCheckedModeBanner: false,
-              locale: context.watch<LocaleProvider>().currentLocale,
-              supportedLocales: const [Locale('en'), Locale('vi')],
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              home: const AuthGate(),
-            ),
+        builder: (context) {
+          final themeProvider = context.watch<ThemeProvider>();
+          final localeProvider = context.watch<LocaleProvider>();
+          return MaterialApp(
+            title: 'BTL TravelMate',
+            theme: AppThemes.lightTheme,
+            darkTheme: AppThemes.darkTheme,
+            themeMode: themeProvider.themeMode,
+            debugShowCheckedModeBanner: false,
+            locale: localeProvider.currentLocale,
+            supportedLocales: const [Locale('en'), Locale('vi')],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            home: const AuthGate(),
+          );
+        },
       ),
     );
   }
@@ -101,21 +82,26 @@ class AuthGate extends StatelessWidget {
 
         // Logged in -> show home screen with router
         return Builder(
-          builder:
-              (context) => MaterialApp.router(
-                title: 'BTL TravelMate',
-                theme: Theme.of(context),
-                locale: context.watch<LocaleProvider>().currentLocale,
-                supportedLocales: const [Locale('en'), Locale('vi')],
-                localizationsDelegates: [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                routerConfig: AppRouter.router,
-                debugShowCheckedModeBanner: false,
-              ),
+          builder: (context) {
+            final themeProvider = context.watch<ThemeProvider>();
+            final localeProvider = context.watch<LocaleProvider>();
+            return MaterialApp.router(
+              title: 'BTL TravelMate',
+              theme: AppThemes.lightTheme,
+              darkTheme: AppThemes.darkTheme,
+              themeMode: themeProvider.themeMode,
+              locale: localeProvider.currentLocale,
+              supportedLocales: const [Locale('en'), Locale('vi')],
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              routerConfig: AppRouter.router,
+              debugShowCheckedModeBanner: false,
+            );
+          },
         );
       },
     );

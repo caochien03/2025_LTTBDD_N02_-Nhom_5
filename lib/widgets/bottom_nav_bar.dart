@@ -34,8 +34,6 @@ class CustomBottomNavBar extends StatelessWidget {
             break;
         }
       },
-      selectedItemColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Colors.grey,
       items: [
         BottomNavigationBarItem(
           icon: const Icon(Icons.person),

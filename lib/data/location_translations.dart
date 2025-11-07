@@ -105,8 +105,8 @@ class LocationTranslations {
   };
 
   static Map<String, List<String>> _provincesTranslations = {
-    'vi': ['Tất cả', 'Hà Nội', 'TP. Hồ Chí Minh', 'Quảng Ninh', 'Quảng Nam', 'Lào Cai', 'Lâm Đồng', 'Kiên Giang', 'Khánh Hòa'],
-    'en': ['All', 'Hanoi', 'Ho Chi Minh City', 'Quang Ninh', 'Quang Nam', 'Lao Cai', 'Lam Dong', 'Kien Giang', 'Khanh Hoa'],
+    'vi': ['Hà Nội', 'TP. Hồ Chí Minh', 'Quảng Ninh', 'Quảng Nam', 'Lào Cai', 'Lâm Đồng', 'Kiên Giang', 'Khánh Hòa'],
+    'en': ['Hanoi', 'Ho Chi Minh City', 'Quang Ninh', 'Quang Nam', 'Lao Cai', 'Lam Dong', 'Kien Giang', 'Khanh Hoa'],
   };
 
   static String getName(String locationKey, Locale locale) {

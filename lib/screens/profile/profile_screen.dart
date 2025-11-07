@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/bottom_nav_bar.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/locale_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../localization/app_localizations.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -12,6 +13,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final localeProvider = Provider.of<LocaleProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final currentLocale = localeProvider.currentLocale;
 
     return Scaffold(
@@ -252,16 +254,9 @@ class ProfilePage extends StatelessWidget {
                           ),
                         ),
                         Switch(
-                          value: false,
+                          value: themeProvider.isDarkMode,
                           onChanged: (value) {
-                            // TODO: Implement dark mode
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Tính năng chế độ tối sẽ được triển khai',
-                                ),
-                              ),
-                            );
+                            themeProvider.setDarkMode(value);
                           },
                         ),
                       ],

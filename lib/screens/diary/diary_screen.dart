@@ -64,9 +64,9 @@ class _DiaryPageState extends State<DiaryPage> {
                 (context, setModalState) => Container(
                   height: MediaQuery.of(context).size.height * 0.9,
                   padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(20),
                     ),
                   ),
@@ -82,16 +82,20 @@ class _DiaryPageState extends State<DiaryPage> {
                               children: [
                                 Text(
                                   entry.locationName,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   formatDate(entry.date, context),
                                   style: TextStyle(
-                                    color: Colors.grey[600],
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.7),
                                     fontSize: 14,
                                   ),
                                 ),
@@ -115,8 +119,21 @@ class _DiaryPageState extends State<DiaryPage> {
                                     fit: BoxFit.contain,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.broken_image),
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.1)
+                                                : Colors.grey[300]!,
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.5),
+                                        ),
                                       );
                                     },
                                   )
@@ -192,8 +209,21 @@ class _DiaryPageState extends State<DiaryPage> {
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
-                                        color: Colors.grey[300],
-                                        child: const Icon(Icons.broken_image),
+                                        color:
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.1)
+                                                : Colors.grey[300]!,
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.5),
+                                        ),
                                       );
                                     },
                                   ),
@@ -208,13 +238,20 @@ class _DiaryPageState extends State<DiaryPage> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.1)
+                                    : Colors.grey[200]!,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             entry.notes,
                             style: TextStyle(
-                              color: Colors.grey[700],
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.8),
                               fontSize: 14,
                             ),
                           ),
@@ -225,7 +262,9 @@ class _DiaryPageState extends State<DiaryPage> {
                         child: Text(
                           '${currentIndex + 1} / ${entry.images.length}',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -381,7 +420,18 @@ class _DiaryPageState extends State<DiaryPage> {
                                           errorBuilder:
                                               (context, error, stack) =>
                                                   Container(
-                                                    color: Colors.grey[300],
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.dark
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                                .withOpacity(
+                                                                  0.1,
+                                                                )
+                                                            : Colors.grey[300]!,
                                                     child: const Icon(
                                                       Icons.broken_image,
                                                     ),
@@ -395,7 +445,18 @@ class _DiaryPageState extends State<DiaryPage> {
                                           errorBuilder:
                                               (context, error, stack) =>
                                                   Container(
-                                                    color: Colors.grey[300],
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.dark
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                                .withOpacity(
+                                                                  0.1,
+                                                                )
+                                                            : Colors.grey[300]!,
                                                     child: const Icon(
                                                       Icons.broken_image,
                                                     ),
@@ -408,7 +469,18 @@ class _DiaryPageState extends State<DiaryPage> {
                                           errorBuilder:
                                               (context, error, stack) =>
                                                   Container(
-                                                    color: Colors.grey[300],
+                                                    color:
+                                                        Theme.of(
+                                                                  context,
+                                                                ).brightness ==
+                                                                Brightness.dark
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                                .withOpacity(
+                                                                  0.1,
+                                                                )
+                                                            : Colors.grey[300]!,
                                                     child: const Icon(
                                                       Icons.broken_image,
                                                     ),
@@ -459,7 +531,9 @@ class _DiaryPageState extends State<DiaryPage> {
                                 Text(
                                   entry.notes,
                                   style: TextStyle(
-                                    color: Colors.grey[700],
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.8),
                                     fontSize: 14,
                                   ),
                                 ),
@@ -472,7 +546,14 @@ class _DiaryPageState extends State<DiaryPage> {
                                   label: Text(
                                     '${entry.images.length} ${l10n.photos}',
                                   ),
-                                  backgroundColor: Colors.grey[200],
+                                  backgroundColor:
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.1)
+                                          : Colors.grey[200]!,
                                 ),
                               ),
                             ],
@@ -493,7 +574,7 @@ class _DiaryPageState extends State<DiaryPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -506,6 +587,12 @@ class _DiaryPageState extends State<DiaryPage> {
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -515,9 +602,10 @@ class _DiaryPageState extends State<DiaryPage> {
                           children: [
                             Text(
                               l10n.addNewDiaryEntry,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             IconButton(
@@ -536,8 +624,10 @@ class _DiaryPageState extends State<DiaryPage> {
                         const SizedBox(height: 8),
                         Text(
                           l10n.choosePhotosOrTakeNew,
-                          style: const TextStyle(
-                            color: Colors.grey,
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.7),
                             fontSize: 14,
                           ),
                         ),
@@ -756,7 +846,7 @@ class _DiaryPageState extends State<DiaryPage> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -769,6 +859,12 @@ class _DiaryPageState extends State<DiaryPage> {
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -778,9 +874,10 @@ class _DiaryPageState extends State<DiaryPage> {
                           children: [
                             Text(
                               l10n.editDiaryEntry,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             IconButton(
@@ -823,8 +920,11 @@ class _DiaryPageState extends State<DiaryPage> {
                                       }
                                     },
                                     style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(
-                                        color: Colors.grey,
+                                      side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.3),
                                       ),
                                     ),
                                     child: const Icon(Icons.add),
