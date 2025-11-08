@@ -89,63 +89,83 @@ class _ExplorePageState extends State<ExplorePage> {
     final provinces = getProvinces(context);
 
     return Scaffold(
-      body: Column(
-        children: [
-          // Search Bar
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey.withOpacity(0.1),
-                  width: 1,
-                ),
-              ),
-            ),
-            child: Container(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Search Bar
+            Container(
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F3F5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: l10n.searchPlaceholder,
-                  prefixIcon: const Icon(Icons.search),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                color: Theme.of(context).scaffoldBackgroundColor,
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.withOpacity(0.1),
+                    width: 1,
                   ),
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F3F5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: l10n.searchPlaceholder,
+                    prefixIcon: const Icon(Icons.search),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
+                ),
               ),
             ),
-          ),
 
-          // Filter Chips
-          Container(
-            height: 60,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: provinces.length + 1,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  final isSelected = selectedProvince == null;
+            // Filter Chips
+            Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: provinces.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    final isSelected = selectedProvince == null;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: FilterChip(
+                        label: Text(l10n.all),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          setState(() {
+                            selectedProvince = null;
+                          });
+                        },
+                        selectedColor: Theme.of(
+                          context,
+                        ).primaryColor.withOpacity(0.2),
+                        checkmarkColor: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  }
+                  final province = provinces[index - 1];
+                  final isSelected = selectedProvince == province;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: FilterChip(
-                      label: Text(l10n.all),
+                      label: Text(province),
                       selected: isSelected,
                       onSelected: (selected) {
                         setState(() {
-                          selectedProvince = null;
+                          selectedProvince = province;
                         });
                       },
                       selectedColor: Theme.of(
@@ -154,180 +174,167 @@ class _ExplorePageState extends State<ExplorePage> {
                       checkmarkColor: Theme.of(context).primaryColor,
                     ),
                   );
-                }
-                final province = provinces[index - 1];
-                final isSelected = selectedProvince == province;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(province),
-                    selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedProvince = province;
-                      });
-                    },
-                    selectedColor: Theme.of(
-                      context,
-                    ).primaryColor.withOpacity(0.2),
-                    checkmarkColor: Theme.of(context).primaryColor,
-                  ),
-                );
-              },
+                },
+              ),
             ),
-          ),
 
-          // Location Cards
-          Expanded(
-            child:
-                filteredLocations.isEmpty
-                    ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 64,
-                            color: Colors.grey[400],
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            l10n.noLocationsFound,
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 16,
+            // Location Cards
+            Expanded(
+              child:
+                  filteredLocations.isEmpty
+                      ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search_off,
+                              size: 64,
+                              color: Colors.grey[400],
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: filteredLocations.length,
-                      itemBuilder: (context, index) {
-                        final location = filteredLocations[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          clipBehavior: Clip.antiAlias,
-                          child: InkWell(
-                            onTap: () {
-                              _showLocationDetail(context, location);
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  children: [
-                                    Image.network(
-                                      location.image,
-                                      height: 200,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (
-                                        context,
-                                        error,
-                                        stackTrace,
-                                      ) {
-                                        return Container(
-                                          height: 200,
-                                          color: Colors.grey[300],
-                                          child: const Icon(Icons.broken_image),
-                                        );
-                                      },
-                                    ),
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: Material(
-                                        color: Colors.white.withOpacity(0.9),
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: InkWell(
-                                          onTap:
-                                              () => toggleFavorite(location.id),
+                            const SizedBox(height: 16),
+                            Text(
+                              l10n.noLocationsFound,
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: filteredLocations.length,
+                        itemBuilder: (context, index) {
+                          final location = filteredLocations[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            clipBehavior: Clip.antiAlias,
+                            child: InkWell(
+                              onTap: () {
+                                _showLocationDetail(context, location);
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Image.network(
+                                        location.image,
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Container(
+                                            height: 200,
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                              Icons.broken_image,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      Positioned(
+                                        top: 8,
+                                        right: 8,
+                                        child: Material(
+                                          color: Colors.white.withOpacity(0.9),
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8),
-                                            child: Icon(
-                                              Icons.favorite,
-                                              size: 20,
-                                              color:
-                                                  location.isFavorite
-                                                      ? Colors.red
-                                                      : Colors.grey[600],
-                                              fill:
-                                                  location.isFavorite
-                                                      ? 1.0
-                                                      : 0.0,
+                                          child: InkWell(
+                                            onTap:
+                                                () =>
+                                                    toggleFavorite(location.id),
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: Icon(
+                                                Icons.favorite,
+                                                size: 20,
+                                                color:
+                                                    location.isFavorite
+                                                        ? Colors.red
+                                                        : Colors.grey[600],
+                                                fill:
+                                                    location.isFavorite
+                                                        ? 1.0
+                                                        : 0.0,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        location.name,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            size: 16,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withOpacity(0.7),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          location.name,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            location.province,
-                                            style: TextStyle(
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 16,
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .onSurface
                                                   .withOpacity(0.7),
-                                              fontSize: 14,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        location.description,
-                                        style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withOpacity(0.7),
-                                          fontSize: 14,
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              location.province,
+                                              style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withOpacity(0.7),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          location.description,
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withOpacity(0.7),
+                                            fontSize: 14,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-          ),
-        ],
+                          );
+                        },
+                      ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: const CustomBottomNavBar(),
     );

@@ -280,134 +280,136 @@ class _FavoritesPageState extends State<FavoritesPage>
           );
         }).toList();
     return Scaffold(
-      body: Column(
-        children: [
-          TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabs: [
-              Tab(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.allFavorites),
-                    const SizedBox(width: 8),
-                    Chip(
-                      label: Text('${favoriteLocations.length}'),
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Colors.grey[300],
-                      labelStyle: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.wishlist),
-                    const SizedBox(width: 8),
-                    Chip(
-                      label: Text('${wishlistLocations.length}'),
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Colors.grey[300],
-                      labelStyle: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.planned),
-                    const SizedBox(width: 8),
-                    Chip(
-                      label: Text('${plannedLocations.length}'),
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Colors.grey[300],
-                      labelStyle: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              Tab(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.visited),
-                    const SizedBox(width: 8),
-                    Chip(
-                      label: Text('${visitedLocations.length}'),
-                      padding: EdgeInsets.zero,
-                      backgroundColor: Colors.grey[300],
-                      labelStyle: const TextStyle(fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Expanded(
-            child: TabBarView(
+      body: SafeArea(
+        child: Column(
+          children: [
+            TabBar(
               controller: _tabController,
-              children: [
-                // All favorites
-                favoriteLocations.isEmpty
-                    ? buildEmptyState(
-                      Icons.favorite_border,
-                      l10n.noFavoriteLocations,
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: favoriteLocations.length,
-                      itemBuilder:
-                          (context, index) =>
-                              buildLocationCard(favoriteLocations[index]),
-                    ),
-                // Wishlist
-                wishlistLocations.isEmpty
-                    ? buildEmptyState(
-                      Icons.favorite_border,
-                      l10n.noWishlistLocations,
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: wishlistLocations.length,
-                      itemBuilder:
-                          (context, index) =>
-                              buildLocationCard(wishlistLocations[index]),
-                    ),
-                // Planned
-                plannedLocations.isEmpty
-                    ? buildEmptyState(
-                      Icons.calendar_today,
-                      l10n.noPlannedLocations,
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: plannedLocations.length,
-                      itemBuilder:
-                          (context, index) =>
-                              buildLocationCard(plannedLocations[index]),
-                    ),
-                // Visited
-                visitedLocations.isEmpty
-                    ? buildEmptyState(
-                      Icons.check_circle,
-                      l10n.noVisitedLocations,
-                    )
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: visitedLocations.length,
-                      itemBuilder:
-                          (context, index) =>
-                              buildLocationCard(visitedLocations[index]),
-                    ),
+              isScrollable: true,
+              tabs: [
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l10n.allFavorites),
+                      const SizedBox(width: 8),
+                      Chip(
+                        label: Text('${favoriteLocations.length}'),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.grey[300],
+                        labelStyle: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l10n.wishlist),
+                      const SizedBox(width: 8),
+                      Chip(
+                        label: Text('${wishlistLocations.length}'),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.grey[300],
+                        labelStyle: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l10n.planned),
+                      const SizedBox(width: 8),
+                      Chip(
+                        label: Text('${plannedLocations.length}'),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.grey[300],
+                        labelStyle: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l10n.visited),
+                      const SizedBox(width: 8),
+                      Chip(
+                        label: Text('${visitedLocations.length}'),
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.grey[300],
+                        labelStyle: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // All favorites
+                  favoriteLocations.isEmpty
+                      ? buildEmptyState(
+                        Icons.favorite_border,
+                        l10n.noFavoriteLocations,
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: favoriteLocations.length,
+                        itemBuilder:
+                            (context, index) =>
+                                buildLocationCard(favoriteLocations[index]),
+                      ),
+                  // Wishlist
+                  wishlistLocations.isEmpty
+                      ? buildEmptyState(
+                        Icons.favorite_border,
+                        l10n.noWishlistLocations,
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: wishlistLocations.length,
+                        itemBuilder:
+                            (context, index) =>
+                                buildLocationCard(wishlistLocations[index]),
+                      ),
+                  // Planned
+                  plannedLocations.isEmpty
+                      ? buildEmptyState(
+                        Icons.calendar_today,
+                        l10n.noPlannedLocations,
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: plannedLocations.length,
+                        itemBuilder:
+                            (context, index) =>
+                                buildLocationCard(plannedLocations[index]),
+                      ),
+                  // Visited
+                  visitedLocations.isEmpty
+                      ? buildEmptyState(
+                        Icons.check_circle,
+                        l10n.noVisitedLocations,
+                      )
+                      : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: visitedLocations.length,
+                        itemBuilder:
+                            (context, index) =>
+                                buildLocationCard(visitedLocations[index]),
+                      ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
       // Notes Dialog
       bottomSheet:
